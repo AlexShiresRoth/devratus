@@ -35,6 +35,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             avatar: session?.user?.image,
             authProvider: token?.provider,
             resources: [],
+            groups: [],
           });
 
           await newAccount.save();

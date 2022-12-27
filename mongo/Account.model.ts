@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-const AccountAchema = new mongoose.Schema({
+const AccountSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter a name"],
@@ -15,13 +15,18 @@ const AccountAchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  groups: {
+    type: Array<{ _id: String; ref: "Grouping" }>,
+  },
   resources: {
-    type: Array,
+    type: Array<{ _id: String; ref: "Resource" }>,
   },
   authProvider: {
     type: String,
   },
 });
 
+export type AccountType = typeof AccountSchema & Document;
+
 export default mongoose.models.Account ||
-  mongoose.model("Account", AccountAchema);
+  mongoose.model("Account", AccountSchema);

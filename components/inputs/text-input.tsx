@@ -8,6 +8,7 @@ type Props = {
   inputValue: string;
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  maxLength?: number;
 };
 
 const TextInput = ({
@@ -18,9 +19,10 @@ const TextInput = ({
   inputValue,
   onChange,
   placeholder,
+  maxLength = 60,
 }: Props) => {
   return (
-    <>
+    <div className="flex flex-col w-full gap-1">
       <label htmlFor={htmlFor} className="text-slate-100">
         {labelText}
       </label>
@@ -31,9 +33,10 @@ const TextInput = ({
         value={inputValue}
         onChange={onChange}
         placeholder={placeholder}
-        className="p-2 bg-slate-800 rounded text-slate-50 border-b-4 border-b-sky-400"
+        className="p-2 bg-slate-800 rounded text-slate-50 border-b-4 border-b-sky-400 w-full"
+        maxLength={maxLength}
       />
-    </>
+    </div>
   );
 };
 

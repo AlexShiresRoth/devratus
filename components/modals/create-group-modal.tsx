@@ -28,7 +28,10 @@ const CreateGroupModal = ({ isModalVisible, setModalVisibility }: Props) => {
               Organize relative tools by creating a group
             </p>
           </div>
-          <CreateGroupForm />
+          <CreateGroupForm
+            isModalVisible={isModalVisible}
+            toggleModalVisible={setModalVisibility}
+          />
         </div>
       </div>
     </div>
