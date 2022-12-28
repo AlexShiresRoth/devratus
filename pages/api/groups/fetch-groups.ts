@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import AccountModel from "../../../mongo/Account.model";
 import GroupingModel from "../../../mongo/Grouping.model";
+import ResourceModel from "../../../mongo/Resource.model";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,6 +19,19 @@ export default async function handler(
     const groups = await Promise.all(
       foundAccount?.groups?.map(async (group: string) => {
         const foundGroup = await GroupingModel.findById(group);
+
+        if (!foundGroup) throw new Error("Error finding group");
+
+        const foundResources = await Promise.all(
+          foundGroup.resources.map(async (resource: string) => {
+            const foundResource = await ResourceModel.findById(resource);
+
+            return foundResource;
+          })
+        );
+
+        foundGroup.resources = foundResources;
+
         return foundGroup;
       })
     );

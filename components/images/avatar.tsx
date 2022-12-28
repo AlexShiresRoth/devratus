@@ -8,7 +8,7 @@ type Props = {
 const Avatar = ({ url }: Props) => {
   if (!url) return null;
   return (
-    <div className="w-8 h-8 rounded-full relative">
+    <div className="w-8 h-8 rounded-full relative border-2 border-sky-400">
       <Image
         src={url}
         alt={"avatar image"}

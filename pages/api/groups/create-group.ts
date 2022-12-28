@@ -2,14 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../lib/db-connect";
 import AccountModel from "../../../mongo/Account.model";
 import GroupingModel from "../../../mongo/Grouping.model";
+import ResourceModel from "../../../mongo/Resource.model";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
   try {
-    console.log("body of christ", req.body);
-
     if (req.body?.userData?.status !== "authenticated")
       throw new Error("Not authenticated");
 
@@ -21,7 +20,23 @@ export default async function handler(
 
     if (!newGroup) throw new Error("Error creating group");
 
-    console.log("new group", newGroup);
+    if (req.body?.groupData?.resources?.length > 0) {
+      const resources = await Promise.all(
+        req.body?.groupData?.resources?.map(
+          async (resource: { resourceName: string; resourceLink: string }) => {
+            const newResource = await ResourceModel.create({
+              ...resource,
+            });
+
+            await newResource.save();
+
+            return newResource?._id;
+          }
+        )
+      );
+      //add resources reference to group
+      newGroup.resources = resources;
+    }
 
     await newGroup.save();
 

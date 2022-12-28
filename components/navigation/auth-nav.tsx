@@ -1,20 +1,31 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import { signOut } from "next-auth/react";
+import React from "react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
 import { AiOutlineHome, AiOutlineSetting, AiOutlineUser, AiOutlineCluster } from "react-icons/ai";
+import Avatar from "../images/avatar";
+import AvatarSquare from "../images/avatar-square";
+
 const AuthNav = () => {
+
+  const { data: session } = useSession();
+
   const pathname = usePathname();
 
   const baseClass =
-    "text-slate-200 transition-all border-l-2 pl-2 hover:text-sky-400 flex items-center gap-2 text-sm";
+    "text-slate-200 transition-all border-l-2  hover:text-sky-400 flex items-center gap-2 text-sm";
   const activePathClass = "text-sky-400 border-l-2 border-l-sky-400 pl-2";
+
   return (
-    <nav className="min-h-screen border-r-2 border-slate-800 px-4 pt-8 relative">
-      <p className="text-slate-200 font-bold">DEVRATUS</p>
-      <div className="flex flex-col gap-4 sticky top-20">
+    <nav className="min-h-screen border-r-2 border-slate-800 pl-4 pr-4 pt-6 relative">
+      <div className="flex flex-col gap-4 sticky top-6">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-slate-200 font-bold">DEVRATUS</p>
+          <AvatarSquare url={session?.user?.image ?? ""} />
+          <p className="text-slate-200 text-xs">{session?.user?.name?.split(" ")[0]}</p>
+        </div>
         <Link
           href="/dashboard"
           className={classNames(baseClass, {
