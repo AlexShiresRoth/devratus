@@ -105,7 +105,7 @@ const CreateGroupForm = ({ toggleModalVisible, isModalVisible }: Props) => {
         data: { groupData: formData, userData: { ...data.user, status } },
       });
 
-      dispatch(addGroup({ group: res.data?.group }));
+      dispatch(addGroup({ group: res.data?.newGroup }));
 
       //close modal on success
       toggleModalVisible(!isModalVisible);

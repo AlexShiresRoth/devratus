@@ -3,6 +3,7 @@ import { RootState } from "../store";
 
 type INITIAL_STATE = {
   groups: Array<{
+    _id: string;
     groupName: string;
     category: string;
     resources:
