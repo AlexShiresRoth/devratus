@@ -38,7 +38,7 @@ const GroupsContainer = ({ userData }: Props) => {
       <div className="w-11/12 flex flex-col gap-4  mt-10 overflow-hidden">
         <div className="flex flex-col gap-4 ">
           {groups.length > 0 &&
-            groups?.map((group: GroupType, i) => (
+            groups?.map((group: GroupType) => (
               <GroupItem group={group} key={group?._id}/>
             ))}
         </div>

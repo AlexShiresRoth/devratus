@@ -32,7 +32,7 @@ const GroupItem = ({ group }: Props) => {
       <div className="flex  gap-8 overflow-x-auto rounded py-4 max-w-screen-xl ">
         {group.resources?.length > 0 &&
           group.resources?.map((resource: any, i: number) => (
-            <GroupResourceItem resource={resource} key={i} />
+            <GroupResourceItem resource={resource} key={i} group={group} />
           ))}
       </div>
     </div>

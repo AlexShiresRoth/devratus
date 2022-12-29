@@ -1,14 +1,16 @@
 "use client";
 import React from "react";
-import { GroupResource } from "../../types/group.types";
+import { GroupResource, GroupType } from "../../types/group.types";
 import { AiOutlineEdit } from "react-icons/ai";
+import { BiTask } from "react-icons/bi";
 import { useState } from "react";
 import EditResourceModal from "../modals/edit-resource-modal";
 type Props = {
   resource: GroupResource;
+  group: GroupType;
 };
 
-const GroupResourceItem = ({ resource }: Props) => {
+const GroupResourceItem = ({ resource, group }: Props) => {
   const [showEditModal, setShowEditModal] = useState(false);
   return (
     <>
@@ -16,6 +18,7 @@ const GroupResourceItem = ({ resource }: Props) => {
         isModalVisible={showEditModal}
         setModalVisibility={setShowEditModal}
         resource={resource}
+        group={group}
       />
       <div className="min-w-[400px]">
         <div className="flex flex-col gap-2 bg-sky-400/10 p-8 rounded">
@@ -28,9 +31,19 @@ const GroupResourceItem = ({ resource }: Props) => {
             >
               {resource?.resourceName}
             </a>
-            <button onClick={() => setShowEditModal(!showEditModal)}>
-              <AiOutlineEdit className="text-slate-400 text-base" />
-            </button>
+            <div className="flex items-center gap-4">
+              <button className="flex items-center gap-1 text-slate-400 text-sm">
+                <BiTask className="text-slate-400 " />
+                Tasks
+              </button>
+              <button
+                onClick={() => setShowEditModal(!showEditModal)}
+                className="flex items-center gap-1 text-slate-400 text-sm"
+              >
+                <AiOutlineEdit className="text-slate-400" />
+                Edit
+              </button>
+            </div>
           </div>
           <iframe src={resource?.resourceLink} className="rounded w-full" />
         </div>

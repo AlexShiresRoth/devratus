@@ -8,6 +8,7 @@ type INITIAL_STATE = {
     category: string;
     resources:
       | Array<{
+          _id: string;
           resourceName: string;
           resourceLink: string;
         }>
@@ -35,10 +36,30 @@ export const groupsSlice = createSlice({
     ) => {
       state.groups = action.payload.groups;
     },
+    updateResourceInGroup: (
+      state: INITIAL_STATE,
+      action: PayloadAction<{
+        group: INITIAL_STATE["groups"][number];
+        resource: INITIAL_STATE["groups"][number]["resources"][number];
+      }>
+    ) => {
+      //locate index of payload group
+      const groupIndex = state.groups.findIndex(
+        (group) => group._id === action.payload.group._id
+      );
+      //locate index of payload resource
+      const resourceIndex = state.groups[groupIndex].resources.findIndex(
+        (resource) => resource._id === action.payload.resource._id
+      );
+      //update resource in group via index
+      state.groups[groupIndex].resources[resourceIndex] =
+        action.payload.resource;
+    },
   },
 });
 
-export const { addGroup, fetchGroups } = groupsSlice.actions;
+export const { addGroup, fetchGroups, updateResourceInGroup } =
+  groupsSlice.actions;
 
 export const groupState = (state: RootState) => state.groups;
 
