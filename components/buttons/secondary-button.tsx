@@ -9,7 +9,7 @@ const SecondaryButton = ({ children, onClick }: Props) => {
   return (
     <button
       onClick={onClick}
-      className="p-2 text-xs border-[1px] rounded text-slate-50 font-semibold hover:bg-sky-800 transition-all"
+      className="p-2 text-xs rounded text-slate-50 bg-slate-600 font-semibold hover:bg-sky-800 transition-all  hover:shadow-none"
     >
       {children}
     </button>
