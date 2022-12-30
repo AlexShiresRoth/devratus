@@ -1,7 +1,3 @@
-import React, { useCallback, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/redux-hooks";
-import { fetchGroups, groupState } from "../../redux/slices/groups.slice";
-import axios from "axios";
 import GroupItem from "./group-item";
 import { GroupType } from "../../types/group.types";
 import useFetchGroups from "../../custom-hooks/useFetchGroups";
@@ -12,8 +8,6 @@ type Props = {
 
 const GroupsContainer = ({ userData }: Props) => {
   const { isLoading, groups } = useFetchGroups({ fetchData: userData });
-
-  console.log("groups: ", groups);
 
   return (
     <div className="w-full flex flex-col items-center overflow-hidden ">

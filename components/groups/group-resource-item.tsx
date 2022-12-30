@@ -1,19 +1,50 @@
 "use client";
 import React from "react";
 import { GroupResource, GroupType } from "../../types/group.types";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { BiTask } from "react-icons/bi";
 import { useState } from "react";
 import EditResourceModal from "../modals/edit-resource-modal";
+import DeleteModal from "../modals/delete-modal";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 type Props = {
   resource: GroupResource;
   group: GroupType;
 };
 
 const GroupResourceItem = ({ resource, group }: Props) => {
+  const { data, status } = useSession();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteResource = async () => {
+    try {
+      const res = await axios("/api/resources/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          ...data,
+          status,
+        },
+      });
+      //need to remove item in redux store
+      console.log("res: ", res);
+    } catch (error) {
+      console.error("Error deleting resource: ", error);
+    }
+  };
   return (
     <>
+      <DeleteModal
+        isModalVisible={showDeleteModal}
+        toggleModalVisible={setShowDeleteModal}
+        callback={() => handleDeleteResource()}
+        headingText={resource?.resourceName}
+        deleteText={`Are you sure you want to delete ${resource?.resourceName}?`}
+      />
       <EditResourceModal
         isModalVisible={showEditModal}
         setModalVisibility={setShowEditModal}
@@ -45,7 +76,17 @@ const GroupResourceItem = ({ resource, group }: Props) => {
               </button>
             </div>
           </div>
+          {/* Somehow get favicon or logo */}
           <iframe src={resource?.resourceLink} className="rounded w-full" />
+          <div className="flex items-center justify-end">
+            <button
+              onClick={() => setShowDeleteModal(!showDeleteModal)}
+              className="text-red-300 flex items-center gap-2 text-xs mt-2"
+            >
+              <AiOutlineDelete />
+              Remove
+            </button>
+          </div>
         </div>
       </div>
     </>
