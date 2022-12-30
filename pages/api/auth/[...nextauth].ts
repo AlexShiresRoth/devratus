@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../lib/db-connect";
@@ -19,7 +19,15 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   return await NextAuth(req, res, {
     ...authOptions,
     callbacks: {
-      async session({ session, token }) {
+      async session({
+        session,
+        token,
+        user,
+      }: {
+        session: Session & any;
+        token: any;
+        user: any;
+      }) {
         await dbConnect();
 
         if (!token) throw new Error("Error No Token");
@@ -42,6 +50,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
 
           console.log("created a new account", newAccount);
         }
+
+        session.accessToken = token.accessToken;
+
+        console.log("sessiontoken", session, token, user);
 
         return session;
       },

@@ -14,7 +14,8 @@ type Props = {
 };
 
 const GroupResourceItem = ({ resource, group }: Props) => {
-  const { data, status } = useSession();
+  const { data: session, status, } = useSession();
+  
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -26,8 +27,10 @@ const GroupResourceItem = ({ resource, group }: Props) => {
           "Content-Type": "application/json",
         },
         data: {
-          ...data,
+          session,
           status,
+          resourceId: resource?._id,
+          groupId: group?._id,
         },
       });
       //need to remove item in redux store

@@ -14,5 +14,7 @@ const ResourceSchema = new mongoose.Schema({
   },
 });
 
+export type Resource = (mongoose.Document & typeof ResourceSchema) | null;
+
 export default mongoose.models.Resource ||
   mongoose.model("Resource", ResourceSchema);
