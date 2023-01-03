@@ -36,6 +36,11 @@ export const groupsSlice = createSlice({
     ) => {
       state.groups = action.payload.groups;
     },
+    removeGroup: (state, action: PayloadAction<{ groupId: string }>) => {
+      state.groups = state.groups.filter(
+        (group) => group._id !== action.payload.groupId
+      );
+    },
     updateResourceInGroup: (
       state: INITIAL_STATE,
       action: PayloadAction<{
@@ -58,7 +63,7 @@ export const groupsSlice = createSlice({
   },
 });
 
-export const { addGroup, fetchGroups, updateResourceInGroup } =
+export const { addGroup, fetchGroups, updateResourceInGroup, removeGroup } =
   groupsSlice.actions;
 
 export const groupState = (state: RootState) => state.groups;

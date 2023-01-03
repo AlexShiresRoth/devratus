@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { GroupResource, GroupType } from "../../types/group.types";
 import Heading4 from "../text/heading-4";
 import ModalContainer from "./modal-container";
@@ -47,31 +47,39 @@ const EditResourceModal = ({
 
       dispatch(updateResourceInGroup({ resource: res.data?.resource, group }));
 
-      console.log("response", res, "grou[", group);
+      console.log("response", res, "group", group);
 
       setModalVisibility(!isModalVisible);
-      
     } catch (error) {
       console.error("Error editing resource", error);
     }
   };
 
+  useMemo(() => {
+    if (resource) {
+      setFormData({
+        resourceName: resource?.resourceName ?? "",
+        resourceLink: resource?.resourceLink ?? "",
+      });
+    }
+  }, [resource]);
+
   if (!isModalVisible) return null;
 
   return (
     <ModalContainer>
-      <div className="flex flex-col gap-2 p-8">
-        <div className="flex items center justify-between border-b-[1px] border-slate-800 pb-2">
+      <div className='flex flex-col gap-2 p-8'>
+        <div className='flex items center justify-between border-b-[1px] border-slate-800 pb-2'>
           <Heading4>Edit {resource?.resourceName} Resource</Heading4>
           <button
             onClick={() => setModalVisibility(!isModalVisible)}
-            className="text-xs text-slate-400 flex items-center gap-1   transition-all hover:text-red-500/30 "
+            className='text-xs text-slate-400 flex items-center gap-1   transition-all hover:text-red-500/30 '
           >
             <AiOutlineClose /> Close
           </button>
         </div>
-        <form className="flex flex-col items-end mt-4">
-          <div className="flex flex-col gap-4 w-full items-end mb-8">
+        <form className='flex flex-col items-end mt-4'>
+          <div className='flex flex-col gap-4 w-full items-end mb-8'>
             <TextInput
               inputValue={resourceName}
               inputName={"resourceName"}

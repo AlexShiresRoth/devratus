@@ -4,6 +4,8 @@ import Heading4 from "../text/heading-4";
 import GroupResourceItem from "./group-resource-item";
 import { AiOutlinePlus } from "react-icons/ai";
 import GroupSettingsMenu from "./group-settings-menu";
+import GroupAddResource from "./group-add-resource";
+
 type Props = {
   group: GroupType;
 };
@@ -20,14 +22,11 @@ const GroupItem = ({ group }: Props) => {
           <p className='text-slate-400 text-sm '>{group?.category}</p>
         </div>
         <div className='flex items-center gap-4'>
-          <button className='text-slate-400 text-xs bg-slate-800 rounded p-2 flex items-center gap-2'>
-            <AiOutlinePlus className='text-slate-400 text-xs' />
-            Add Resource/s
-          </button>
-          <GroupSettingsMenu />
+          <GroupAddResource group={group} />
+          <GroupSettingsMenu group={group} />
         </div>
       </div>
-      <div className='flex  gap-8 overflow-x-auto rounded py-4 max-w-screen-xl '>
+      <div className='flex gap-8 overflow-x-auto rounded py-4 max-w-screen-xl '>
         {group.resources?.length > 0 &&
           group.resources?.map((resource: any, i: number) => (
             <GroupResourceItem resource={resource} key={i} group={group} />
