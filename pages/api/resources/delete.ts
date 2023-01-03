@@ -10,10 +10,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await unstable_getServerSession(req, res, authOptions);
-  console.log("make it?");
+
   if (session) {
     console.log("session", session);
   } else return res.status(401).json({ message: "Not authenticated" });
+
   try {
     const { resourceId, groupId } = req.body;
 
