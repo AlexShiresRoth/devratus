@@ -9,7 +9,12 @@ import DeleteModal from "../modals/delete-modal";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/redux-hooks";
-import { groupState, removeGroup } from "../../redux/slices/groups.slice";
+import {
+  deleteResourceInGroup,
+  groupState,
+  removeGroup,
+} from "../../redux/slices/groups.slice";
+import Image from "next/image";
 type Props = {
   resource: GroupResource;
   group: GroupType;
@@ -23,7 +28,6 @@ const GroupResourceItem = ({ resource, group }: Props) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState<string>("");
 
-  console.log("resource: ", resource);
   const handleDeleteResource = async () => {
     try {
       const res = await axios("/api/resources/delete", {
@@ -38,6 +42,13 @@ const GroupResourceItem = ({ resource, group }: Props) => {
           groupId: group?._id,
         },
       });
+
+      if (res.status !== 200) return setError(res.data.message);
+
+      dispatch(deleteResourceInGroup({ group: group, resource }));
+
+      //close on success
+      setShowDeleteModal(false);
       //need to remove item in redux store
       console.log("res: ", res);
     } catch (error) {
@@ -85,7 +96,16 @@ const GroupResourceItem = ({ resource, group }: Props) => {
             </div>
           </div>
           {/* Somehow get favicon or logo */}
-          <iframe src={resource?.resourceLink} className='rounded w-full' />
+          {resource?.resourceImage && (
+            <div className='relative w-full h-56 rounded'>
+              <Image
+                alt={resource?.resourceName}
+                src={resource?.resourceImage}
+                fill={true}
+                className='object-cover object-center rounded'
+              />
+            </div>
+          )}
           <div className='flex items-center justify-end'>
             <button
               onClick={() => setShowDeleteModal(!showDeleteModal)}

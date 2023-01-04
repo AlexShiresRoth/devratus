@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useAppDispatch } from "../../redux/hooks/redux-hooks";
+import { updateGroup } from "../../redux/slices/groups.slice";
 import { GroupType } from "../../types/group.types";
 import PrimaryButton from "../buttons/primary-buttons";
 import TextInput from "../inputs/text-input";
@@ -23,6 +25,8 @@ const AddResourcesModal = ({
   isModalVisible,
   toggleModalVisibility,
 }: Props) => {
+  const dispatch = useAppDispatch();
+
   const [formData, setFormData] = useState<ResourceFormData>({
     resources: [],
   });
@@ -38,23 +42,10 @@ const AddResourcesModal = ({
 
   const { resourceLink, resourceName } = resource;
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setResource({ ...resource, [e.target.name]: e.target.value });
-
-  //@TODO finish this so that resources can be added to group in redux
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const res = await axios("/api/resources/create", {
-        method: "POST",
-        data: { ...formData, groupId: group?._id },
-      });
-
-      console.log("response", res);
-    } catch (error) {
-      console.error("error creating resource", error);
-    }
-  };
 
   const handleAddResource = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -87,6 +78,28 @@ const AddResourcesModal = ({
         ...formData,
         resources: filtered,
       });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const res = await axios("/api/resources/create", {
+        method: "POST",
+        data: { ...formData, groupId: group?._id },
+      });
+
+      if (res.status !== 200) setError(res.data.message);
+
+      dispatch(updateGroup({ group: group }));
+
+      console.log("response", res);
+
+      setFormData({ resources: [] });
+      //close modal on success
+      toggleModalVisibility(!isModalVisible);
+    } catch (error) {
+      console.error("error creating resource", error);
     }
   };
 

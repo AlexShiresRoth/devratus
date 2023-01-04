@@ -28,8 +28,8 @@ const EditResourceModal = ({
   const { data, status } = useSession();
 
   const [formData, setFormData] = useState({
-    resourceName: resource?.resourceName ?? "",
-    resourceLink: resource?.resourceLink ?? "",
+    resourceName: resource?.resourceName,
+    resourceLink: resource?.resourceLink,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -54,15 +54,6 @@ const EditResourceModal = ({
       console.error("Error editing resource", error);
     }
   };
-
-  useMemo(() => {
-    if (resource) {
-      setFormData({
-        resourceName: resource?.resourceName ?? "",
-        resourceLink: resource?.resourceLink ?? "",
-      });
-    }
-  }, [resource]);
 
   if (!isModalVisible) return null;
 

@@ -9,6 +9,9 @@ const ResourceSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter a resource link"],
   },
+  resourceImage: {
+    type: String,
+  },
   visits: {
     type: Number,
   },

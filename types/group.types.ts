@@ -9,4 +9,5 @@ export type GroupResource = {
   resourceName: string;
   resourceLink: string;
   _id: string;
+  resourceImage: string;
 };

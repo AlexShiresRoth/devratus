@@ -7,6 +7,7 @@ type Props = {
   fetchData: any;
 };
 
+//refetches or fetches all groups from db
 const useFetchGroups = ({ fetchData }: Props) => {
   const dispatch = useAppDispatch();
   const { groups } = useAppSelector(groupState);
@@ -30,8 +31,10 @@ const useFetchGroups = ({ fetchData }: Props) => {
 
   useEffect(() => {
     fetchGroupsFromDb();
-  }, [fetchGroupsFromDb, groups.length]);
-  
+  }, [fetchGroupsFromDb, groups.length, groups]);
+  //should updating a resource refetch all groups?
+  //seems like a possible expensive operation
+
   return {
     groups,
     isLoading,

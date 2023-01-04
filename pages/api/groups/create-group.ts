@@ -3,6 +3,8 @@ import dbConnect from "../../../lib/db-connect";
 import AccountModel from "../../../mongo/Account.model";
 import GroupingModel from "../../../mongo/Grouping.model";
 import ResourceModel from "../../../mongo/Resource.model";
+import puppeteer from "puppeteer";
+import { uploadImage } from "../image-upload/image-upload";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,8 +26,26 @@ export default async function handler(
       const resources = await Promise.all(
         req.body?.groupData?.resources?.map(
           async (resource: { resourceName: string; resourceLink: string }) => {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(resource.resourceLink);
+            const image = await page.screenshot({
+              type: "jpeg",
+              path: resource.resourceName + ".jpg",
+            });
+
+            const buffered = Buffer.from(image).toString("base64");
+
+            const { imageUrl, success } = await uploadImage(
+              buffered,
+              resource.resourceName
+            );
+
+            if (!success) throw new Error("Error uploading image");
+
             const newResource = await ResourceModel.create({
               ...resource,
+              resourceImage: imageUrl,
             });
 
             await newResource.save();
