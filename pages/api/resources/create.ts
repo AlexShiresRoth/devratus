@@ -35,9 +35,11 @@ export default async function handler(
             resourceLink,
           });
 
-          foundGroup.resources.push(newResource);
+          foundGroup.resources.unshift(newResource);
 
           await foundGroup.save();
+
+          return foundGroup;
         }
       )
     );
