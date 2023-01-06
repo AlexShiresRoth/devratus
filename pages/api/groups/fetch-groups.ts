@@ -10,7 +10,10 @@ export default async function handler(
   try {
     const { user, status } = req.body;
 
-    if (status !== "authenticated") throw new Error("Not authenticated");
+    if (status !== "authenticated")
+      return res
+        .status(401)
+        .json({ success: false, message: "Not authenticated" });
 
     const foundAccount = await AccountModel.findOne({ email: user?.email });
 

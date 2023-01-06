@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 type INITIAL_STATE = {
+  refetchTriggers: Array<any>;
   groups: Array<{
     _id: string;
     groupName: string;
@@ -16,6 +17,7 @@ type INITIAL_STATE = {
 
 const initialState: INITIAL_STATE = {
   groups: [],
+  refetchTriggers: [],
 };
 
 export const groupsSlice = createSlice({
@@ -58,20 +60,22 @@ export const groupsSlice = createSlice({
       state.groups[groupIndex].resources[resourceIndex] =
         action.payload.resource;
     },
-    addResourceToGroup: (
+    addResourcesToGroup: (
       state,
       action: PayloadAction<{
         group: INITIAL_STATE["groups"][number];
-        resource: INITIAL_STATE["groups"][number]["resources"][number];
+        resources: INITIAL_STATE["groups"][number]["resources"];
       }>
     ) => {
       //locate index of payload group
       const groupIndex = state.groups.findIndex(
         (group) => group._id === action.payload.group._id
       );
-      if (action.payload.resource !== null) {
+      if (action.payload.resources.length > 0) {
         //add resource to group via index
-        state.groups[groupIndex].resources.unshift(action.payload.resource);
+        action.payload.resources.forEach((resource) => {
+          state.groups[groupIndex].resources.unshift(resource);
+        });
       }
     },
     deleteResourceInGroup: (
@@ -117,7 +121,7 @@ export const {
   removeGroup,
   updateGroup,
   deleteResourceInGroup,
-  addResourceToGroup,
+  addResourcesToGroup,
 } = groupsSlice.actions;
 
 export const groupState = (state: RootState) => state.groups;

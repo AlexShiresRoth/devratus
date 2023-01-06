@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useAppDispatch } from "../../redux/hooks/redux-hooks";
-import { updateGroup } from "../../redux/slices/groups.slice";
+import { addResourcesToGroup } from "../../redux/slices/groups.slice";
 import { GroupType } from "../../types/group.types";
 import PrimaryButton from "../buttons/primary-buttons";
+import SecondaryButton from "../buttons/secondary-button";
 import TextInput from "../inputs/text-input";
 import ModalContainer from "./modal-container";
 
@@ -25,6 +26,7 @@ const AddResourcesModal = ({
   isModalVisible,
   toggleModalVisibility,
 }: Props) => {
+  console.log("is this updating all the time");
   const dispatch = useAppDispatch();
 
   const [formData, setFormData] = useState<ResourceFormData>({
@@ -91,7 +93,13 @@ const AddResourcesModal = ({
 
       if (res.status !== 200) setError(res.data.message);
 
-      dispatch(updateGroup({ group: group }));
+      //response provides an updated group object that we can use to updated the resources
+      dispatch(
+        addResourcesToGroup({
+          group,
+          resources: res.data.updatedGroup?.resources,
+        })
+      );
 
       console.log("response", res);
 
@@ -144,13 +152,12 @@ const AddResourcesModal = ({
               <p className='text-xs text-slate-500'>
                 Enter Name & Link then hit add
               </p>
-              <button
+              <SecondaryButton
                 onClick={(e) => handleAddResource(e)}
-                disabled={resourceLink && resourceName !== "" ? false : true}
-                className='text-xs text-slate-50 p-2 rounded bg-sky-600 font-bold transition-all hover:bg-sky-800'
+                isDisabled={resourceLink && resourceName !== "" ? false : true}
               >
                 + Add
-              </button>
+              </SecondaryButton>
             </div>
             {resources.length > 0 && (
               <div className='flex flex-col w-full border-t-[1px] border-slate-800'>

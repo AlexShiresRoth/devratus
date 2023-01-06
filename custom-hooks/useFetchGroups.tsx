@@ -29,9 +29,9 @@ const useFetchGroups = ({ fetchData }: Props) => {
     })();
   }, [dispatch, fetchData]);
 
-  useEffect(() => {
+  useMemo(() => {
     fetchGroupsFromDb();
-  }, [fetchGroupsFromDb, groups.length, groups]);
+  }, [fetchGroupsFromDb]);
   //should updating a resource refetch all groups?
   //seems like a possible expensive operation
 

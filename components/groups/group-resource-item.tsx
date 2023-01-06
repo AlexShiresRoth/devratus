@@ -12,18 +12,24 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/redux-hooks";
 import {
   deleteResourceInGroup,
   groupState,
-  removeGroup,
 } from "../../redux/slices/groups.slice";
 import Image from "next/image";
+import useFetchResource from "../../custom-hooks/useFetchResource";
+
 type Props = {
   resource: GroupResource;
   group: GroupType;
 };
 
 const GroupResourceItem = ({ resource, group }: Props) => {
+  const {
+    resource: fetchedResource,
+    resourceFetchError,
+    isResourceLoading,
+  } = useFetchResource({ resourceId: resource?._id });
+
   const { data: session, status } = useSession();
   const dispatch = useAppDispatch();
-  const { groups } = useAppSelector(groupState);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState<string>("");
@@ -38,7 +44,7 @@ const GroupResourceItem = ({ resource, group }: Props) => {
         data: {
           session,
           status,
-          resourceId: resource?._id,
+          resourceId: fetchedResource?._id,
           groupId: group?._id,
         },
       });
@@ -64,22 +70,24 @@ const GroupResourceItem = ({ resource, group }: Props) => {
         headingText={resource?.resourceName}
         deleteText={`Are you sure you want to delete ${resource?.resourceName}?`}
       />
-      <EditResourceModal
-        isModalVisible={showEditModal}
-        setModalVisibility={setShowEditModal}
-        resource={resource}
-        group={group}
-      />
+      {showEditModal && (
+        <EditResourceModal
+          isModalVisible={showEditModal}
+          setModalVisibility={setShowEditModal}
+          resource={fetchedResource}
+          group={group}
+        />
+      )}
       <div className='min-w-[400px]'>
         <div className='flex flex-col gap-2 bg-sky-400/10 p-8 rounded'>
           <div className='flex justify-between items-center'>
             <a
               className='text-slate-50 font-bold uppercase hover:underline'
-              href={resource?.resourceLink}
+              href={fetchedResource?.resourceLink}
               target='_blank'
               rel='noopener noreferrer'
             >
-              {resource?.resourceName}
+              {fetchedResource?.resourceName}
             </a>
             <div className='flex items-center gap-4'>
               <button className='flex items-center gap-1 text-slate-400 text-sm'>
@@ -96,15 +104,20 @@ const GroupResourceItem = ({ resource, group }: Props) => {
             </div>
           </div>
           {/* Somehow get favicon or logo */}
-          {resource?.resourceImage && (
-            <div className='relative w-full h-56 rounded'>
+          {fetchedResource?.resourceImage && (
+            <a
+              href={fetchedResource?.resourceLink}
+              rel='noopener noreferrer'
+              target='_blank'
+              className='relative w-full h-56 rounded'
+            >
               <Image
-                alt={resource?.resourceName}
-                src={resource?.resourceImage}
+                alt={fetchedResource?.resourceName}
+                src={fetchedResource?.resourceImage}
                 fill={true}
                 className='object-cover object-center rounded'
               />
-            </div>
+            </a>
           )}
           <div className='flex items-center justify-end'>
             <button

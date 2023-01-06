@@ -5,11 +5,12 @@ import Heading4 from "../text/heading-4";
 import ModalContainer from "./modal-container";
 import { AiOutlineClose } from "react-icons/ai";
 import TextInput from "../inputs/text-input";
-import SecondaryButton from "../buttons/secondary-button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { updateResourceInGroup } from "../../redux/slices/groups.slice";
+import PrimaryButton from "../buttons/primary-buttons";
+
 type Props = {
   isModalVisible: boolean;
   setModalVisibility: (visibility: boolean) => void;
@@ -23,6 +24,7 @@ const EditResourceModal = ({
   resource,
   group,
 }: Props) => {
+  // console.log("wtf is happening");
   const dispatch = useDispatch();
 
   const { data, status } = useSession();
@@ -56,7 +58,6 @@ const EditResourceModal = ({
   };
 
   if (!isModalVisible) return null;
-
   return (
     <ModalContainer>
       <div className='flex flex-col gap-2 p-8'>
@@ -85,9 +86,9 @@ const EditResourceModal = ({
               labelText={"Edit Resource Link"}
             />
           </div>
-          <SecondaryButton onClick={(e) => handleSubmit(e)}>
+          <PrimaryButton onClick={(e) => handleSubmit(e)}>
             Submit Changes
-          </SecondaryButton>
+          </PrimaryButton>
         </form>
       </div>
     </ModalContainer>

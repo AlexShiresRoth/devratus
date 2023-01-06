@@ -5,8 +5,8 @@ type Props = {
 };
 const ModalContainer = ({ children }: Props) => {
   return (
-    <div className="fixed bg-black/70 h-screen w-screen z-50 flex top-0 left-0 justify-center items-center">
-      <div className="w-1/3 bg-black border-[1px] border-sky-800/50 rounded">
+    <div className='fixed bg-black/70 h-screen w-screen z-50 flex top-0 left-0 justify-center items-center'>
+      <div className='w-1/3 bg-slate-900 border-[1px] border-sky-800/50 rounded'>
         {children}
       </div>
     </div>

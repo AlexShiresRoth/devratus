@@ -2,7 +2,6 @@ import React from "react";
 import { GroupType } from "../../types/group.types";
 import Heading4 from "../text/heading-4";
 import GroupResourceItem from "./group-resource-item";
-import { AiOutlinePlus } from "react-icons/ai";
 import GroupSettingsMenu from "./group-settings-menu";
 import GroupAddResource from "./group-add-resource";
 

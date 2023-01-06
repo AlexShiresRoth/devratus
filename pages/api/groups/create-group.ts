@@ -68,7 +68,7 @@ export default async function handler(
     if (!foundAccount) throw new Error("Error finding account");
 
     //just want a reference to group
-    foundAccount.groups.push(newGroup?._id);
+    foundAccount.groups.unshift(newGroup?._id);
 
     await foundAccount.save();
 

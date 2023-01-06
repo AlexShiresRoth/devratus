@@ -22,8 +22,6 @@ export default async function handler(
     if (!foundGroup)
       return res.status(404).json({ message: "Group not found" });
 
-    console.log("wtf?", resources);
-
     await Promise.all(
       resources.map(
         async (resource: { resourceName: string; resourceLink: string }) => {
