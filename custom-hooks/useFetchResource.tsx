@@ -1,8 +1,5 @@
 import axios from "axios";
-import Error from "next/error";
-import React from "react";
 import useSWR from "swr";
-import { Resource } from "../mongo/Resource.model";
 import { GroupResource } from "../types/group.types";
 
 type Props = {
@@ -32,6 +29,7 @@ const useFetchResource = ({
     { url: "/api/resources/resource", args: { resourceId } },
     fetcher
   );
+
   return {
     resource: data?.data?.resource,
     isResourceLoading: isLoading,

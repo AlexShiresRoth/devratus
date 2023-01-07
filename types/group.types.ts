@@ -2,7 +2,7 @@ export type GroupType = {
   _id: string;
   groupName: string;
   category: string;
-  resources: GroupResource[] | [];
+  resources: string[];
 };
 
 export type GroupResource = {

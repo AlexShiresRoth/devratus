@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { GroupResource, GroupType } from "../../types/group.types";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { BiTask } from "react-icons/bi";
@@ -12,27 +12,68 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/redux-hooks";
 import {
   deleteResourceInGroup,
   groupState,
+  updateResourceInGroup,
 } from "../../redux/slices/groups.slice";
 import Image from "next/image";
 import useFetchResource from "../../custom-hooks/useFetchResource";
+import { Session } from "next-auth";
+import { mutate } from "swr";
 
 type Props = {
-  resource: GroupResource;
+  resourceId: string;
   group: GroupType;
 };
 
-const GroupResourceItem = ({ resource, group }: Props) => {
+type EditFormData = {
+  resourceName: string;
+  resourceLink: string;
+};
+
+//I cant tell in my sleep deprived mind if this is insane?
+//1st step, fetch the initial resource
+//2nd step, add the fetched resource to local state
+//3rd step, update the local state with the updated resource if an update is made
+const GroupResourceItem = ({ resourceId, group }: Props) => {
   const {
     resource: fetchedResource,
     resourceFetchError,
     isResourceLoading,
-  } = useFetchResource({ resourceId: resource?._id });
+  } = useFetchResource({ resourceId: resourceId });
 
   const { data: session, status } = useSession();
   const dispatch = useAppDispatch();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | unknown>("");
+  //do we need to rely on redux for this component?
+  //updating the local state on edit seems to suffice for now
+  const [localResource, setLocalResource] = useState<GroupResource | null>(
+    fetchedResource ?? null
+  );
+
+  const handleEditSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    formData: EditFormData,
+    data: Session | null,
+    resourceId: string
+  ) => {
+    e.preventDefault();
+    try {
+      const res = await axios("/api/resources/edit", {
+        method: "POST",
+        data: { ...formData, ...data, status, resourceId },
+      });
+
+      if (res.status !== 200) throw new Error("Error editing resource");
+
+      setLocalResource(res.data?.resource);
+
+      setShowEditModal(false);
+    } catch (error) {
+      console.error("Error editing resource", error);
+      setError(error);
+    }
+  };
 
   const handleDeleteResource = async () => {
     try {
@@ -51,7 +92,12 @@ const GroupResourceItem = ({ resource, group }: Props) => {
 
       if (res.status !== 200) return setError(res.data.message);
 
-      dispatch(deleteResourceInGroup({ group: group, resource }));
+      dispatch(
+        deleteResourceInGroup({
+          group: group,
+          resourceId: fetchedResource["_id"],
+        })
+      );
 
       //close on success
       setShowDeleteModal(false);
@@ -61,33 +107,45 @@ const GroupResourceItem = ({ resource, group }: Props) => {
       console.error("Error deleting resource: ", error);
     }
   };
+
+  useMemo(() => {
+    if (!isResourceLoading) setLocalResource(fetchedResource);
+  }, [isResourceLoading, fetchedResource]);
+
+  if (resourceFetchError) return <div>Error fetching resource</div>;
+
+  if (isResourceLoading) return <div>Loading...</div>;
+
+  if (!localResource) return null;
+
   return (
     <>
       <DeleteModal
         isModalVisible={showDeleteModal}
         toggleModalVisible={setShowDeleteModal}
         callback={() => handleDeleteResource()}
-        headingText={resource?.resourceName}
-        deleteText={`Are you sure you want to delete ${resource?.resourceName}?`}
+        headingText={localResource?.resourceName}
+        deleteText={`Are you sure you want to delete ${localResource?.resourceName}?`}
       />
-      {showEditModal && (
-        <EditResourceModal
-          isModalVisible={showEditModal}
-          setModalVisibility={setShowEditModal}
-          resource={fetchedResource}
-          group={group}
-        />
-      )}
+
+      <EditResourceModal
+        isModalVisible={showEditModal}
+        setModalVisibility={setShowEditModal}
+        resource={localResource}
+        group={group}
+        handleSubmit={handleEditSubmit}
+      />
+
       <div className='min-w-[400px]'>
         <div className='flex flex-col gap-2 bg-sky-400/10 p-8 rounded'>
           <div className='flex justify-between items-center'>
             <a
               className='text-slate-50 font-bold uppercase hover:underline'
-              href={fetchedResource?.resourceLink}
+              href={localResource?.resourceLink}
               target='_blank'
               rel='noopener noreferrer'
             >
-              {fetchedResource?.resourceName}
+              {localResource?.resourceName}
             </a>
             <div className='flex items-center gap-4'>
               <button className='flex items-center gap-1 text-slate-400 text-sm'>
@@ -104,16 +162,16 @@ const GroupResourceItem = ({ resource, group }: Props) => {
             </div>
           </div>
           {/* Somehow get favicon or logo */}
-          {fetchedResource?.resourceImage && (
+          {localResource?.resourceImage && (
             <a
-              href={fetchedResource?.resourceLink}
+              href={localResource?.resourceLink}
               rel='noopener noreferrer'
               target='_blank'
               className='relative w-full h-56 rounded'
             >
               <Image
-                alt={fetchedResource?.resourceName}
-                src={fetchedResource?.resourceImage}
+                alt={localResource?.resourceName}
+                src={localResource?.resourceImage}
                 fill={true}
                 className='object-cover object-center rounded'
               />

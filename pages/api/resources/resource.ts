@@ -13,7 +13,7 @@ export default async function handler(
     await authCheck(req, res, authOptions);
     await dbConnect();
 
-    console.log("resourceId: ", resourceId);
+    console.log("resource refetch?: ", resourceId);
     if (!resourceId)
       return res.status(400).json({ message: "Missing resource id" });
 

@@ -10,12 +10,19 @@ import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { updateResourceInGroup } from "../../redux/slices/groups.slice";
 import PrimaryButton from "../buttons/primary-buttons";
+import { Session } from "next-auth";
 
 type Props = {
   isModalVisible: boolean;
   setModalVisibility: (visibility: boolean) => void;
   resource: GroupResource;
   group: GroupType;
+  handleSubmit: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    formData: { resourceName: string; resourceLink: string },
+    data: Session | null,
+    resourceId: string
+  ) => void;
 };
 
 const EditResourceModal = ({
@@ -23,39 +30,29 @@ const EditResourceModal = ({
   setModalVisibility,
   resource,
   group,
+  handleSubmit,
 }: Props) => {
-  // console.log("wtf is happening");
-  const dispatch = useDispatch();
-
-  const { data, status } = useSession();
+  const { data: session, status } = useSession();
 
   const [formData, setFormData] = useState({
     resourceName: resource?.resourceName,
     resourceLink: resource?.resourceLink,
   });
 
+  const [error, setError] = useState<string | null | any>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const { resourceName, resourceLink } = formData;
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const res = await axios("/api/resources/edit", {
-        method: "POST",
-        data: { ...formData, ...data, status, resourceId: resource?._id },
+  useMemo(() => {
+    if (resource?.resourceName && resource?.resourceLink)
+      setFormData({
+        resourceLink: resource?.resourceLink,
+        resourceName: resource?.resourceName,
       });
-
-      dispatch(updateResourceInGroup({ resource: res.data?.resource, group }));
-
-      console.log("response", res, "group", group);
-
-      setModalVisibility(!isModalVisible);
-    } catch (error) {
-      console.error("Error editing resource", error);
-    }
-  };
+  }, [resource?.resourceName, resource?.resourceLink]);
 
   if (!isModalVisible) return null;
   return (
@@ -86,7 +83,9 @@ const EditResourceModal = ({
               labelText={"Edit Resource Link"}
             />
           </div>
-          <PrimaryButton onClick={(e) => handleSubmit(e)}>
+          <PrimaryButton
+            onClick={(e) => handleSubmit(e, formData, session, resource._id)}
+          >
             Submit Changes
           </PrimaryButton>
         </form>

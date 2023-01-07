@@ -1,5 +1,5 @@
 import React from "react";
-import { GroupType } from "../../types/group.types";
+import { GroupResource, GroupType } from "../../types/group.types";
 import Heading4 from "../text/heading-4";
 import GroupResourceItem from "./group-resource-item";
 import GroupSettingsMenu from "./group-settings-menu";
@@ -27,8 +27,12 @@ const GroupItem = ({ group }: Props) => {
       </div>
       <div className='flex gap-8 overflow-x-auto rounded py-4 max-w-screen-xl '>
         {group.resources?.length > 0 &&
-          group.resources?.map((resource: any, i: number) => (
-            <GroupResourceItem resource={resource} key={i} group={group} />
+          group.resources?.map((resourceId: GroupResource["_id"]) => (
+            <GroupResourceItem
+              resourceId={resourceId}
+              key={resourceId}
+              group={group}
+            />
           ))}
       </div>
     </div>

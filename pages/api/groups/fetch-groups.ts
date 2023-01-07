@@ -25,16 +25,6 @@ export default async function handler(
 
         if (!foundGroup) throw new Error("Error finding group");
 
-        const foundResources = await Promise.all(
-          foundGroup.resources.map(async (resource: string) => {
-            const foundResource = await ResourceModel.findById(resource);
-
-            return foundResource;
-          })
-        );
-
-        foundGroup.resources = foundResources;
-
         return foundGroup;
       })
     );

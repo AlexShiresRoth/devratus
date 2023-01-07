@@ -7,11 +7,7 @@ type INITIAL_STATE = {
     _id: string;
     groupName: string;
     category: string;
-    resources: Array<{
-      _id: string;
-      resourceName: string;
-      resourceLink: string;
-    }>;
+    resources: string[];
   }>;
 };
 
@@ -45,7 +41,7 @@ export const groupsSlice = createSlice({
       state: INITIAL_STATE,
       action: PayloadAction<{
         group: INITIAL_STATE["groups"][number];
-        resource: INITIAL_STATE["groups"][number]["resources"][number];
+        resourceId: string;
       }>
     ) => {
       //locate index of payload group
@@ -54,11 +50,11 @@ export const groupsSlice = createSlice({
       );
       //locate index of payload resource
       const resourceIndex = state.groups[groupIndex].resources.findIndex(
-        (resource) => resource._id === action.payload.resource._id
+        (resource) => resource === action.payload.resourceId
       );
       //update resource in group via index
-      state.groups[groupIndex].resources[resourceIndex] =
-        action.payload.resource;
+      // state.groups[groupIndex].resources[resourceIndex] =
+      //   action.payload.resource;
     },
     addResourcesToGroup: (
       state,
@@ -72,17 +68,16 @@ export const groupsSlice = createSlice({
         (group) => group._id === action.payload.group._id
       );
       if (action.payload.resources.length > 0) {
-        //add resource to group via index
-        action.payload.resources.forEach((resource) => {
-          state.groups[groupIndex].resources.unshift(resource);
-        });
+        //action will provide all resources in group
+        //shouldn't it just provide the new ones?
+        state.groups[groupIndex].resources = action.payload.resources;
       }
     },
     deleteResourceInGroup: (
       state,
       action: PayloadAction<{
         group: INITIAL_STATE["groups"][number];
-        resource: INITIAL_STATE["groups"][number]["resources"][number];
+        resourceId: string;
       }>
     ) => {
       //locate index of payload group
@@ -91,7 +86,7 @@ export const groupsSlice = createSlice({
       );
 
       const filteredResources = state.groups[groupIndex].resources.filter(
-        (resource) => resource._id !== action.payload.resource._id
+        (resource) => resource !== action.payload.resourceId
       );
       //set resources to filtered resources
       state.groups[groupIndex].resources = filteredResources;
