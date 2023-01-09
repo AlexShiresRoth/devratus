@@ -118,60 +118,62 @@ const CreateGroupForm = ({ toggleModalVisible, isModalVisible }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-2 rounded items-start"
+      className='flex flex-col gap-2 rounded items-end w-full'
       onSubmit={(e) => handleSubmit(e)}
     >
       <TextInput
-        htmlFor="groupName"
-        labelText="Group Name"
+        htmlFor='groupName'
+        labelText='Group Name'
         inputValue={groupName}
         onChange={handleChange}
         inputName={"groupName"}
-        placeholder="e.g. Frontend"
+        placeholder='e.g. Frontend'
       />
       <TextInput
-        htmlFor="category"
-        labelText="Group Category"
+        htmlFor='category'
+        labelText='Group Category'
         inputValue={category}
         onChange={handleChange}
         inputName={"category"}
-        placeholder="e.g. Web Development"
+        placeholder='e.g. Web Development'
       />
-      <div className="my-2 flex flex-col gap-2 items-start w-full">
-        <SecondaryButton onClick={(e) => handleShowResourceForm(e)}>
-          Add Resources
-        </SecondaryButton>
-        <p className="text-slate-400 text-xs">
-          You can always add resources after group creation
-        </p>
+      <div className='my-2 flex flex-col gap-2 items-start w-full'>
+        <div className='flex gap-4 items-center w-full'>
+          <SecondaryButton onClick={(e) => handleShowResourceForm(e)}>
+            Add Resources
+          </SecondaryButton>
+          <p className='text-slate-400 text-xs'>
+            You can always add resources after group creation
+          </p>
+        </div>
         {showResourceForm && (
-          <div className="flex flex-col justify-between w-full gap-4 bg-slate-900/50 border-[1px] border-sky-400/20 px-6 py-4 rounded">
-            <div className="flex w-full justify-between gap-4">
+          <div className='flex flex-col justify-between w-full gap-4 bg-slate-900/50 border-[1px] border-sky-400/20 px-6 py-4 rounded'>
+            <div className='flex w-full justify-between gap-4'>
               <TextInput
-                htmlFor="resourceName"
-                labelText="Resource Name"
+                htmlFor='resourceName'
+                labelText='Resource Name'
                 inputValue={resourceName}
                 onChange={handleResourceInputChangeEvent}
                 inputName={"resourceName"}
-                placeholder="e.g. Github"
+                placeholder='e.g. Github'
               />
               <TextInput
-                htmlFor="resourceLink"
-                labelText="Resource Link"
+                htmlFor='resourceLink'
+                labelText='Resource Link'
                 inputValue={resourceLink}
                 onChange={handleResourceInputChangeEvent}
                 inputName={"resourceLink"}
-                placeholder="e.g. https://github.com"
+                placeholder='e.g. https://github.com'
               />
             </div>
-            <div className="flex justify-between items-center">
-              <p className="text-xs text-slate-500">
+            <div className='flex justify-between items-center'>
+              <p className='text-xs text-slate-500'>
                 Enter Name & Link then hit add
               </p>
               <button
                 onClick={(e) => handleAddResource(e)}
                 disabled={resourceLink && resourceName !== "" ? false : true}
-                className="text-xs text-slate-50 p-2 rounded bg-sky-600 font-bold transition-all hover:bg-sky-800"
+                className='text-xs text-slate-50 p-2 rounded bg-sky-600 font-bold transition-all hover:bg-sky-800'
               >
                 + Add
               </button>
@@ -180,21 +182,21 @@ const CreateGroupForm = ({ toggleModalVisible, isModalVisible }: Props) => {
         )}
 
         {resources.length > 0 && (
-          <div className="flex flex-col">
-            <p className="text-slate-400 text-xs my-2">Added Resources</p>
-            <div className="flex flex-wrap gap-2">
+          <div className='flex flex-col'>
+            <p className='text-slate-400 text-xs my-2'>Added Resources</p>
+            <div className='flex flex-wrap gap-2'>
               {resources.map((resource, index) => (
                 <div
                   key={index}
                   data-index={index}
-                  className="flex items-center gap-2  border-[1px] border-sky-400/20 p-2 text-xs rounded"
+                  className='flex items-center gap-2  border-[1px] border-sky-400/20 p-2 text-xs rounded'
                 >
-                  <p className="text-slate-50 text-xs">
+                  <p className='text-slate-50 text-xs'>
                     {resource.resourceName}
                   </p>
                   <button
                     onClick={(e) => handleRemoveResource(e)}
-                    className="text-slate-400 text-xs"
+                    className='text-slate-400 text-xs'
                   >
                     X
                   </button>

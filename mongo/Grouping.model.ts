@@ -9,6 +9,11 @@ const GroupSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter a category"],
   },
+  tasks: {
+    type: Array<{
+      _id: { type: Mongoose.Types.ObjectId; ref: "Task" };
+    }>,
+  },
   resources: {
     type: Array<{
       resourceName: { type: String };

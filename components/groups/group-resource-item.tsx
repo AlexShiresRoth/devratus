@@ -18,6 +18,7 @@ import Image from "next/image";
 import useFetchResource from "../../custom-hooks/useFetchResource";
 import { Session } from "next-auth";
 import { mutate } from "swr";
+import ResourceTaskModal from "../modals/resource-task-modal";
 
 type Props = {
   resourceId: string;
@@ -44,6 +45,7 @@ const GroupResourceItem = ({ resourceId, group }: Props) => {
   const dispatch = useAppDispatch();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
   const [error, setError] = useState<string | unknown>("");
   //do we need to rely on redux for this component?
   //updating the local state on edit seems to suffice for now
@@ -136,6 +138,12 @@ const GroupResourceItem = ({ resourceId, group }: Props) => {
         handleSubmit={handleEditSubmit}
       />
 
+      <ResourceTaskModal
+        setModalVisibility={setShowTaskModal}
+        isModalVisible={showTaskModal}
+        resource={localResource}
+      />
+
       <div className='min-w-[400px]'>
         <div className='flex flex-col gap-2 bg-sky-400/10 p-8 rounded'>
           <div className='flex justify-between items-center'>
@@ -148,7 +156,10 @@ const GroupResourceItem = ({ resourceId, group }: Props) => {
               {localResource?.resourceName}
             </a>
             <div className='flex items-center gap-4'>
-              <button className='flex items-center gap-1 text-slate-400 text-sm'>
+              <button
+                onClick={() => setShowTaskModal(!showTaskModal)}
+                className='flex items-center gap-1 text-slate-400 text-sm'
+              >
                 <BiTask className='text-slate-400 ' />
                 Tasks
               </button>

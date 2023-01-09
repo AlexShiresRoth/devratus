@@ -1,7 +1,10 @@
 import React from "react";
 import { GroupType } from "../../types/group.types";
+import CloseModalButton from "../buttons/close-modal-button";
 import EditGroupForm from "../forms/edit-group-form";
 import ModalContainer from "./modal-container";
+import ModalContentWrapper from "./modal-content-wrapper";
+import ModalHeaderWrapper from "./modal-header-wrapper";
 
 type Props = {
   group: GroupType;
@@ -18,24 +21,18 @@ const EditGroupModal = ({
 
   return (
     <ModalContainer>
-      <div className='flex flex-col gap-2 border-b-[1px] pb-2 mb-2 border-sky-400/20 p-4'>
-        <div className='flex justify-between items-center'>
-          <h1 className='font-bold text-2xl text-slate-200'>
-            Edit Group: {group?.groupName}
-          </h1>
-          <button
-            className='text-slate-400'
-            onClick={() => toggleModalVisibility(!isModalVisible)}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-
-      <EditGroupForm
-        group={group}
-        toggleModalVisibility={toggleModalVisibility}
-      />
+      <ModalHeaderWrapper>
+        <h1 className='font-bold text-2xl text-slate-200'>
+          Edit Group <span className='text-sky-400'>{group?.groupName}</span>
+        </h1>
+        <CloseModalButton toggleModalVisibility={toggleModalVisibility} />
+      </ModalHeaderWrapper>
+      <ModalContentWrapper>
+        <EditGroupForm
+          group={group}
+          toggleModalVisibility={toggleModalVisibility}
+        />
+      </ModalContentWrapper>
     </ModalContainer>
   );
 };

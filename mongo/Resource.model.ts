@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
 const ResourceSchema = new mongoose.Schema({
   resourceName: {
@@ -11,6 +11,11 @@ const ResourceSchema = new mongoose.Schema({
   },
   resourceImage: {
     type: String,
+  },
+  tasks: {
+    type: Array<{
+      _id: { type: Mongoose.Types.ObjectId; ref: "Task" };
+    }>,
   },
   visits: {
     type: Number,

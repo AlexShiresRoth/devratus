@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { updateResourceInGroup } from "../../redux/slices/groups.slice";
 import PrimaryButton from "../buttons/primary-buttons";
 import { Session } from "next-auth";
+import ModalHeaderWrapper from "./modal-header-wrapper";
+import ModalContentWrapper from "./modal-content-wrapper";
+import CloseModalButton from "../buttons/close-modal-button";
 
 type Props = {
   isModalVisible: boolean;
@@ -57,16 +60,14 @@ const EditResourceModal = ({
   if (!isModalVisible) return null;
   return (
     <ModalContainer>
-      <div className='flex flex-col gap-2 p-8'>
-        <div className='flex items center justify-between border-b-[1px] border-slate-800 pb-2'>
-          <Heading4>Edit {resource?.resourceName} Resource</Heading4>
-          <button
-            onClick={() => setModalVisibility(!isModalVisible)}
-            className='text-xs text-slate-400 flex items-center gap-1   transition-all hover:text-red-500/30 '
-          >
-            <AiOutlineClose /> Close
-          </button>
-        </div>
+      <ModalHeaderWrapper>
+        <Heading4>
+          Edit <span className='text-sky-400'>{resource?.resourceName} </span>
+          Resource
+        </Heading4>
+        <CloseModalButton toggleModalVisibility={setModalVisibility} />
+      </ModalHeaderWrapper>
+      <ModalContentWrapper>
         <form className='flex flex-col items-end mt-4'>
           <div className='flex flex-col gap-4 w-full items-end mb-8'>
             <TextInput
@@ -89,7 +90,7 @@ const EditResourceModal = ({
             Submit Changes
           </PrimaryButton>
         </form>
-      </div>
+      </ModalContentWrapper>
     </ModalContainer>
   );
 };

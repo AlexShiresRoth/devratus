@@ -11,7 +11,7 @@ const SecondaryButton = ({ children, onClick, isDisabled }: Props) => {
     <button
       onClick={onClick}
       disabled={isDisabled}
-      className='p-2 text-xs rounded text-slate-50 bg-slate-600 font-semibold hover:bg-sky-800 transition-all  hover:shadow-none'
+      className='p-2 text-xs rounded text-slate-50 bg-slate-500 font-semibold hover:bg-sky-500 transition-all  hover:shadow-none'
     >
       {children}
     </button>

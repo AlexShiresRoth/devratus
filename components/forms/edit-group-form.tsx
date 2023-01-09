@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useAppDispatch } from "../../redux/hooks/redux-hooks";
+import { updateGroup } from "../../redux/slices/groups.slice";
 import { GroupType } from "../../types/group.types";
 import PrimaryButton from "../buttons/primary-buttons";
 import TextInput from "../inputs/text-input";
@@ -10,6 +12,8 @@ type Props = {
 };
 
 const EditGroupForm = ({ group, toggleModalVisibility }: Props) => {
+  const dispatch = useAppDispatch();
+
   const [formData, setFormData] = useState({
     groupName: group.groupName,
     category: group.category,
@@ -32,6 +36,8 @@ const EditGroupForm = ({ group, toggleModalVisibility }: Props) => {
 
       if (res.status !== 200) throw new Error("Error editing group");
 
+      dispatch(updateGroup({ group: res.data.updatedGroup }));
+
       toggleModalVisibility(false);
 
       console.log("response", res);
@@ -42,7 +48,7 @@ const EditGroupForm = ({ group, toggleModalVisibility }: Props) => {
 
   return (
     <form className='flex flex-col gap-2 items-end' onSubmit={handleSubmit}>
-      <div className='flex flex-col gap-2 px-4 w-full'>
+      <div className='flex flex-col gap-2 w-full mb-2'>
         <TextInput
           htmlFor='groupName'
           labelText='Group Name'
@@ -60,9 +66,7 @@ const EditGroupForm = ({ group, toggleModalVisibility }: Props) => {
           placeholder='e.g. Web Development'
         />
       </div>
-      <div className='p-4'>
-        <PrimaryButton onClick={handleSubmit}>Submit</PrimaryButton>
-      </div>
+      <PrimaryButton onClick={handleSubmit}>Submit</PrimaryButton>
     </form>
   );
 };

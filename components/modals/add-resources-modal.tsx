@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 import { useAppDispatch } from "../../redux/hooks/redux-hooks";
 import { addResourcesToGroup } from "../../redux/slices/groups.slice";
 import { GroupType } from "../../types/group.types";
+import CloseModalButton from "../buttons/close-modal-button";
 import PrimaryButton from "../buttons/primary-buttons";
 import SecondaryButton from "../buttons/secondary-button";
 import TextInput from "../inputs/text-input";
 import ModalContainer from "./modal-container";
+import ModalContentWrapper from "./modal-content-wrapper";
+import ModalHeaderWrapper from "./modal-header-wrapper";
 
 type Props = {
   group: GroupType;
@@ -115,19 +119,14 @@ const AddResourcesModal = ({
 
   return (
     <ModalContainer>
-      <div className='flex flex-col gap-4 p-4'>
-        <div className='flex justify-between items-center border-b-[1px] border-b-slate-800 pb-2'>
-          <h1 className='font-bold text-2xl text-slate-200'>
-            Add Resources to {group?.groupName}
-          </h1>
-          <button
-            className='text-slate-400'
-            onClick={() => toggleModalVisibility(!isModalVisible)}
-          >
-            Close
-          </button>
-        </div>
-
+      <ModalHeaderWrapper>
+        <h1 className='font-bold text-2xl text-slate-200'>
+          Add Resources to{" "}
+          <span className='text-sky-400'>{group?.groupName}</span>
+        </h1>
+        <CloseModalButton toggleModalVisibility={toggleModalVisibility} />
+      </ModalHeaderWrapper>
+      <ModalContentWrapper>
         <form className='flex flex-col gap-2 items-end'>
           <div className='flex flex-col justify-between w-full gap-4 bg-slate-900/50 border-[1px] border-sky-400/20 px-6 py-4 rounded'>
             <div className='flex w-full justify-between gap-4'>
@@ -191,7 +190,7 @@ const AddResourcesModal = ({
             </PrimaryButton>
           </div>
         </form>
-      </div>
+      </ModalContentWrapper>
     </ModalContainer>
   );
 };

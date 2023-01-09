@@ -37,6 +37,7 @@ export const groupsSlice = createSlice({
         (group) => group._id !== action.payload.groupId
       );
     },
+    //not sure this is needed anymore
     updateResourceInGroup: (
       state: INITIAL_STATE,
       action: PayloadAction<{
@@ -49,12 +50,6 @@ export const groupsSlice = createSlice({
         (group) => group._id === action.payload.group._id
       );
       //locate index of payload resource
-      const resourceIndex = state.groups[groupIndex].resources.findIndex(
-        (resource) => resource === action.payload.resourceId
-      );
-      //update resource in group via index
-      // state.groups[groupIndex].resources[resourceIndex] =
-      //   action.payload.resource;
     },
     addResourcesToGroup: (
       state,
