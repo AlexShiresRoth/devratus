@@ -11,6 +11,9 @@ const TaskSchema = new mongoose.Schema({
   order: {
     type: Number,
   },
+  status: {
+    type: String,
+  },
   taskDescription: {
     type: String,
   },

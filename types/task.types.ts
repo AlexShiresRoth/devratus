@@ -5,4 +5,6 @@ export type TaskType = {
   taskDescription?: string;
   groupRef?: string;
   resourceRef?: string;
+  _id: string;
+  status?: "tasked" | "completed" | "archived";
 };

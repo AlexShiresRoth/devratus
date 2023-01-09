@@ -20,9 +20,11 @@ export default async function handler(
       task,
       urgency,
       order,
-      resourceRef: null,
-      groupRef: null,
+      resourceRef,
+      groupRef,
     };
+
+    console.log("new task", newtask);
     if (resourceRef) {
       newtask.resourceRef = resourceRef;
     }
