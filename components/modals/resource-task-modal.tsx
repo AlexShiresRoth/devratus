@@ -36,9 +36,9 @@ const ResourceTaskModal = ({
 
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [tasks, setTasks] = useState<Array<any>>(fetchedTasks ?? []);
-  const [taskTab, setTaskTab] = useState<"tasked" | "completed" | "archived">(
-    "tasked"
-  );
+  const [taskTab, setTaskTab] = useState<
+    "incomplete" | "completed" | "archived"
+  >("incomplete");
 
   const handleAddTask = (task: TaskType) => setTasks([task, ...tasks]);
 
@@ -66,8 +66,8 @@ const ResourceTaskModal = ({
                 className={classNames(
                   " font-bold hover:cursor-pointer hover:text-slate-50 transition-all",
                   {
-                    "text-slate-50": taskTab === "tasked",
-                    "text-slate-400": taskTab !== "tasked",
+                    "text-slate-50": taskTab === "incomplete",
+                    "text-slate-400": taskTab !== "incomplete",
                   }
                 )}
               >
@@ -133,9 +133,14 @@ const ResourceTaskModal = ({
           )}
           {tasks.length > 0 ? (
             <div className='flex flex-col max-h-[250px] overflow-y-auto gap-2'>
-              {tasks.map((task: TaskType) => (
-                <ResourceTask key={task?._id} task={task} />
-              ))}
+              {tasks
+                .filter(
+                  (task: TaskType) =>
+                    task.status !== "completed" && task.status !== "archived"
+                )
+                .map((task: TaskType) => (
+                  <ResourceTask key={task?._id} task={task} />
+                ))}
             </div>
           ) : (
             <p className='text-slate-50'>No tasks yet</p>

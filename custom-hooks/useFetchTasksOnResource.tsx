@@ -18,7 +18,6 @@ const fetcher = ({
   });
 
 const useFetchTasksOnResource = ({ resourceId }: Props) => {
-  console.log("resource id?", resourceId);
   const { data, error, isLoading } = useSWR(
     resourceId
       ? {

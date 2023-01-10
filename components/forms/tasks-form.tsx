@@ -2,6 +2,7 @@ import axios from "axios";
 import classNames from "classnames";
 import React, { useState } from "react";
 import { TaskType } from "../../types/task.types";
+import UrgencySelector from "../tasks/urgency-selector";
 
 type Props = {
   addTaskToLocalState: (task: TaskType) => void;
@@ -81,47 +82,10 @@ const TasksForm = ({
           </button>
         </div>
       </div>
-      <div className='w-full flex flex-col'>
-        <p className='text-slate-100 font-bold text-sm mb-2'>Urgency Level</p>
-        <div className='flex gap-2 w-full justify-between'>
-          <span
-            onClick={(e) => handleSelectUrgency(e, "low")}
-            className={classNames(
-              " rounded text-slate-50 flex-1 text-xs p-2 font-bold transition-all hover:cursor-pointer hover:bg-sky-500",
-              {
-                "bg-green-400": urgency !== "low",
-                "bg-sky-500": urgency === "low",
-              }
-            )}
-          >
-            Low
-          </span>
-          <span
-            onClick={(e) => handleSelectUrgency(e, "medium")}
-            className={classNames(
-              " rounded text-slate-50 flex-1 text-xs p-2 font-bold transition-all hover:cursor-pointer hover:bg-sky-500",
-              {
-                "bg-orange-400": urgency !== "medium",
-                "bg-sky-500": urgency === "medium",
-              }
-            )}
-          >
-            Medium
-          </span>
-          <span
-            onClick={(e) => handleSelectUrgency(e, "high")}
-            className={classNames(
-              " rounded text-slate-50 flex-1 text-xs p-2 font-bold transition-all hover:cursor-pointer hover:bg-sky-500",
-              {
-                "bg-red-400": urgency !== "high",
-                "bg-sky-500": urgency === "high",
-              }
-            )}
-          >
-            High
-          </span>
-        </div>
-      </div>
+      <UrgencySelector
+        handleSelectUrgency={handleSelectUrgency}
+        urgency={urgency}
+      />
     </form>
   );
 };

@@ -13,8 +13,9 @@ const TaskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default: "incomplete",
   },
-  taskDescription: {
+  description: {
     type: String,
   },
   groupRef: {
