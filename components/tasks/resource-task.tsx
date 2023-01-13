@@ -1,16 +1,31 @@
 import axios from "axios";
 import classNames from "classnames";
 import React, { useState } from "react";
-import { AiOutlineCheck, AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineCheck,
+  AiOutlineClose,
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineUndo,
+} from "react-icons/ai";
 import { BsArchive } from "react-icons/bs";
 import { TaskType } from "../../types/task.types";
 import UrgencySelector from "./urgency-selector";
 
 type Props = {
   task: TaskType;
+  updateTaskStatus: (
+    taskId: string,
+    status: "incomplete" | "completed" | "archived"
+  ) => void;
+  removeTaskFromList: (taskId: string) => void;
 };
 
-const ResourceTask = ({ task }: Props) => {
+const ResourceTask = ({
+  task,
+  updateTaskStatus,
+  removeTaskFromList,
+}: Props) => {
   const [editMode, setEditMode] = useState(false);
 
   const [taskEdited, editTask] = useState<string>(task?.task);
@@ -29,6 +44,8 @@ const ResourceTask = ({ task }: Props) => {
 
   const [showActions, setShowActions] = useState<boolean>(false);
 
+  const [showDescription, setShowDescription] = useState<boolean>(false);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     editTask(e.target.value);
 
@@ -46,10 +63,14 @@ const ResourceTask = ({ task }: Props) => {
     setUrgency(priority);
   };
 
-  const handleEditModeChange = (enabled: boolean) => {
-    setEditMode(enabled);
-
-    setEditSubmit(false);
+  //reset on close
+  //this does not work, need to figure out how to just roll back
+  const handleReset = () => {
+    setEditMode(false);
+    setError(null);
+    setUrgency(task?.urgency);
+    setDescription(task?.description ?? "");
+    editTask(task?.task);
   };
 
   const handleSubmit = async (
@@ -73,7 +94,6 @@ const ResourceTask = ({ task }: Props) => {
       if (res.status !== 200)
         throw new Error(res.data?.message ?? "Could not update task");
 
-      console.log("res.data", res.data);
       //if successful update in local state
       editTask(res.data.updatedTask?.task);
 
@@ -94,8 +114,11 @@ const ResourceTask = ({ task }: Props) => {
     }
   };
 
-  const handleTaskAction = async (action: "completed" | "archived") => {
+  const handleTaskAction = async (
+    action: "completed" | "archived" | "incomplete"
+  ) => {
     try {
+      //@TODO:need task loading state
       const res = await axios("/api/tasks/edit", {
         method: "POST",
         data: {
@@ -106,8 +129,28 @@ const ResourceTask = ({ task }: Props) => {
 
       if (res.status !== 200)
         throw new Error(res.data?.message ?? "Could not update task");
+
+      updateTaskStatus(task?._id, action);
     } catch (error) {
       console.error("Error actioning", error);
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    try {
+      const res = await axios("/api/tasks/delete", {
+        method: "POST",
+        data: {
+          taskId: task?._id,
+        },
+      });
+      //do not remove from local state if error
+      if (res.status !== 200) throw new Error(res.data?.message);
+      //if successful delete from local state
+      removeTaskFromList(task?._id);
+      //need to delete task in local state as well
+    } catch (error) {
+      console.error("Error deleting task", error);
     }
   };
 
@@ -129,19 +172,50 @@ const ResourceTask = ({ task }: Props) => {
       <div className='flex items-center gap-2 w-full'>
         {showActions && !editMode && (
           <div className='flex items-center gap-2'>
-            <button
-              onClick={() => handleTaskAction("completed")}
-              className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-green-400 hover:text-slate-50 font-bold transition-all'
-            >
-              <AiOutlineCheck />
-            </button>
+            {/* Allow for user to complete task */}
+            {task?.status === "incomplete" && (
+              <button
+                onClick={() => handleTaskAction("completed")}
+                className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-green-400 hover:text-slate-50 font-bold transition-all'
+              >
+                <AiOutlineCheck />
+              </button>
+            )}
+            {task?.status === "completed" && (
+              // Allow for user to set a task back to incomplete
+              <button
+                onClick={() => handleTaskAction("incomplete")}
+                className='text-slate-500 rounded-full p-1 bg-green-400 text-xs hover:bg-slate-800/50 hover:text-slate-50 font-bold transition-all'
+              >
+                <AiOutlineCheck />
+              </button>
+            )}
 
-            <button
-              onClick={() => handleTaskAction("archived")}
-              className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-red-400 hover:text-slate-50 font-bold transition-all'
-            >
-              <BsArchive />
-            </button>
+            {task?.status !== "archived" && (
+              <button
+                onClick={() => handleTaskAction("archived")}
+                className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-red-400 hover:text-slate-50 font-bold transition-all'
+              >
+                <BsArchive />
+              </button>
+            )}
+            {/* //only allow for deleting of archived tasks? */}
+            {task?.status === "archived" && (
+              <>
+                <button
+                  onClick={() => handleTaskAction("incomplete")}
+                  className='text-slate-50  rounded-full p-1 bg-sky-500 text-sm hover:bg-sky-600 hover:text-slate-50 font-bold transition-all'
+                >
+                  <AiOutlineUndo />
+                </button>
+                <button
+                  onClick={() => handleDeleteTask()}
+                  className='text-slate-50    rounded-full p-1 bg-red-500 text-sm hover:bg-red-400 hover:text-slate-50 font-bold transition-all'
+                >
+                  <AiOutlineDelete />
+                </button>
+              </>
+            )}
           </div>
         )}
         {editMode ? (
@@ -179,16 +253,38 @@ const ResourceTask = ({ task }: Props) => {
             </button>
           </form>
         ) : (
-          <p>{taskEdited}</p>
+          <div className='flex flex-col gap-2'>
+            <p
+              className='hover:cursor-pointer'
+              onClick={() => setShowDescription(!showDescription)}
+            >
+              {taskEdited}
+            </p>
+            {showDescription && description && (
+              <div className='p-2 bg-slate-600 rounded'>
+                <p className='text-slate-100 font-bold text-xs'>Description</p>
+                <p className='text-slate-300'>{description}</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
       <div className='w-1/4 flex justify-end'>
-        <button
-          onClick={() => handleEditModeChange(!editMode)}
-          className='flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all'
-        >
-          {editMode ? <AiOutlineClose /> : <AiOutlineEdit />}
-        </button>
+        {editMode ? (
+          <button
+            onClick={() => handleReset()}
+            className='flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all'
+          >
+            <AiOutlineClose />{" "}
+          </button>
+        ) : (
+          <button
+            onClick={() => setEditMode(true)}
+            className='flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all'
+          >
+            <AiOutlineEdit />
+          </button>
+        )}
       </div>
     </div>
   );

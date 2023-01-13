@@ -23,6 +23,7 @@ type Props = {
   resource: GroupResource;
 };
 
+//@TODO: how do we update the status of a task here?
 const ResourceTaskModal = ({
   resource,
   isModalVisible,
@@ -41,6 +42,22 @@ const ResourceTaskModal = ({
   >("incomplete");
 
   const handleAddTask = (task: TaskType) => setTasks([task, ...tasks]);
+
+  const updateTaskStatus = (taskId: string, status: string) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task._id === taskId) {
+        task.status = status;
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
+
+  const removeTaskFromList = (taskId: string) => {
+    const updatedTasks = tasks.filter((task) => task._id !== taskId);
+    setTasks(updatedTasks);
+  };
 
   useMemo(() => {
     if (fetchedTasks?.length > 0) {
@@ -63,6 +80,7 @@ const ResourceTaskModal = ({
           <div className='flex gap-2 items-center justify-between'>
             <div className='flex items-center gap-4'>
               <h4
+                onClick={() => setTaskTab("incomplete")}
                 className={classNames(
                   " font-bold hover:cursor-pointer hover:text-slate-50 transition-all",
                   {
@@ -71,9 +89,12 @@ const ResourceTaskModal = ({
                   }
                 )}
               >
-                Tasks: {tasks?.length ?? 0}
+                Tasks:{" "}
+                {tasks?.filter((task) => task?.status === "incomplete")
+                  .length ?? 0}
               </h4>
               <h4
+                onClick={() => setTaskTab("completed")}
                 className={classNames(
                   " font-bold hover:cursor-pointer hover:text-slate-50 transition-all",
                   {
@@ -87,6 +108,7 @@ const ResourceTaskModal = ({
                   .length ?? 0}
               </h4>
               <h4
+                onClick={() => setTaskTab("archived")}
                 className={classNames(
                   " font-bold hover:cursor-pointer hover:text-slate-50 transition-all",
                   {
@@ -95,7 +117,9 @@ const ResourceTaskModal = ({
                   }
                 )}
               >
-                Archived
+                Archived:{" "}
+                {tasks.filter((task: TaskType) => task?.status === "archived")
+                  .length ?? 0}
               </h4>
             </div>
             {!showTaskForm && (
@@ -134,12 +158,14 @@ const ResourceTaskModal = ({
           {tasks.length > 0 ? (
             <div className='flex flex-col max-h-[250px] overflow-y-auto gap-2'>
               {tasks
-                .filter(
-                  (task: TaskType) =>
-                    task.status !== "completed" && task.status !== "archived"
-                )
+                .filter((task: TaskType) => task.status === taskTab)
                 .map((task: TaskType) => (
-                  <ResourceTask key={task?._id} task={task} />
+                  <ResourceTask
+                    key={task?._id}
+                    task={task}
+                    updateTaskStatus={updateTaskStatus}
+                    removeTaskFromList={removeTaskFromList}
+                  />
                 ))}
             </div>
           ) : (
