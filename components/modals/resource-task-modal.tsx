@@ -1,10 +1,6 @@
 import classNames from "classnames";
 import React, { useMemo, useState } from "react";
-import {
-  AiOutlineBackward,
-  AiOutlineEdit,
-  AiOutlinePlus,
-} from "react-icons/ai";
+import { AiOutlinePlus } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import useFetchTasksOnResource from "../../custom-hooks/useFetchTasksOnResource";
 import { GroupResource } from "../../types/group.types";
@@ -71,14 +67,14 @@ const ResourceTaskModal = ({
       <ModalHeaderWrapper>
         <Heading4>
           Tasks for {` `}
-          <span className='text-sky-400'>{resource.resourceName}</span>
+          <span className="text-sky-400">{resource.resourceName}</span>
         </Heading4>
         <CloseModalButton toggleModalVisibility={setModalVisibility} />
       </ModalHeaderWrapper>
       <ModalContentWrapper>
-        <div className='flex flex-col gap-2 mt-4 bg-slate-600 p-3 rounded'>
-          <div className='flex gap-2 items-center justify-between'>
-            <div className='flex items-center gap-4'>
+        <div className="flex flex-col gap-2 mt-4 bg-slate-600 p-3 rounded">
+          <div className="flex gap-2 items-center justify-between">
+            <div className="flex items-center gap-4">
               <h4
                 onClick={() => setTaskTab("incomplete")}
                 className={classNames(
@@ -123,21 +119,20 @@ const ResourceTaskModal = ({
               </h4>
             </div>
             {!showTaskForm && (
-              <div className='flex items-center gap-2'>
-                <p className='text-slate-400 text-sm'>Add New Tasks</p>
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowTaskForm(!showTaskForm)}
-                  className='rounded bg-slate-400 text-black flex items-center gap-1 text-xs p-2 hover:bg-sky-500 hover:text-slate-50 transition-all'
+                  className="rounded bg-slate-400 text-black flex items-center gap-1 text-xs p-2 hover:bg-sky-500 hover:text-slate-50 transition-all"
                 >
-                  <AiOutlinePlus /> Add
+                  <AiOutlinePlus /> New
                 </button>
               </div>
             )}
             {showTaskForm && (
-              <div className=''>
+              <div className="">
                 <button
                   onClick={() => setShowTaskForm(false)}
-                  className='text-red-300 text-xs font-bold flex items-center gap-1'
+                  className="text-red-300 text-xs font-bold flex items-center gap-1"
                 >
                   <BiArrowBack />
                   Back
@@ -146,7 +141,7 @@ const ResourceTaskModal = ({
             )}
           </div>
           {showTaskForm && (
-            <div className='flex flex-col gap-2'>
+            <div className="flex flex-col gap-2">
               <TasksForm
                 addTaskToLocalState={handleAddTask}
                 resourceRef={resource?._id}
@@ -156,7 +151,7 @@ const ResourceTaskModal = ({
             </div>
           )}
           {tasks.length > 0 ? (
-            <div className='flex flex-col max-h-[250px] overflow-y-auto gap-2'>
+            <div className="flex flex-col max-h-[250px] overflow-y-auto gap-2">
               {tasks
                 .filter((task: TaskType) => task.status === taskTab)
                 .map((task: TaskType) => (
@@ -169,7 +164,7 @@ const ResourceTaskModal = ({
                 ))}
             </div>
           ) : (
-            <p className='text-slate-50'>No tasks yet</p>
+            <p className="text-slate-50">No tasks yet</p>
           )}
         </div>
       </ModalContentWrapper>

@@ -144,30 +144,30 @@ const GroupResourceItem = ({ resourceId, group }: Props) => {
         resource={localResource}
       />
 
-      <div className='min-w-[400px]'>
-        <div className='flex flex-col gap-2 bg-sky-400/10 p-8 rounded'>
-          <div className='flex justify-between items-center'>
+      <div className="min-w-[400px]">
+        <div className="flex flex-col gap-2 bg-sky-400/10 p-8 rounded">
+          <div className="flex justify-between items-center">
             <a
-              className='text-slate-50 font-bold uppercase hover:underline'
+              className="text-slate-50 font-bold uppercase hover:underline"
               href={localResource?.resourceLink}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {localResource?.resourceName}
             </a>
-            <div className='flex items-center gap-4'>
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowTaskModal(!showTaskModal)}
-                className='flex items-center gap-1 text-slate-400 text-sm'
+                className="flex items-center gap-1 text-slate-400 text-sm"
               >
-                <BiTask className='text-slate-400 ' />
+                <BiTask className="text-slate-400 " />
                 Tasks
               </button>
               <button
                 onClick={() => setShowEditModal(!showEditModal)}
-                className='flex items-center gap-1 text-slate-400 text-sm'
+                className="flex items-center gap-1 text-slate-400 text-sm"
               >
-                <AiOutlineEdit className='text-slate-400' />
+                <AiOutlineEdit className="text-slate-400" />
                 Edit
               </button>
             </div>
@@ -176,22 +176,22 @@ const GroupResourceItem = ({ resourceId, group }: Props) => {
           {localResource?.resourceImage && (
             <a
               href={localResource?.resourceLink}
-              rel='noopener noreferrer'
-              target='_blank'
-              className='relative w-full h-56 rounded'
+              rel="noopener noreferrer"
+              target="_blank"
+              className="relative w-full h-56 rounded"
             >
               <Image
                 alt={localResource?.resourceName}
                 src={localResource?.resourceImage}
                 fill={true}
-                className='object-cover object-center rounded'
+                className="object-cover object-center rounded"
               />
             </a>
           )}
-          <div className='flex items-center justify-end'>
+          <div className="flex items-center justify-end">
             <button
               onClick={() => setShowDeleteModal(!showDeleteModal)}
-              className='text-red-300 flex items-center gap-2 text-xs mt-2'
+              className="text-red-300 flex items-center gap-2 text-xs mt-2"
             >
               <AiOutlineDelete />
               Remove

@@ -1,21 +1,25 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import dbConnect from "../../../lib/db-connect";
 import AccountModel from "../../../mongo/Account.model";
 import GroupingModel from "../../../mongo/Grouping.model";
 import ResourceModel from "../../../mongo/Resource.model";
+import { authCheck } from "../auth/auth-check";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const { user, status } = req.body;
+    await dbConnect();
 
-    if (status !== "authenticated")
-      return res
-        .status(401)
-        .json({ success: false, message: "Not authenticated" });
+    const session = await authCheck(req, res, authOptions);
 
-    const foundAccount = await AccountModel.findOne({ email: user?.email });
+    console.log("Session", session);
+
+    const foundAccount = await AccountModel.findOne({
+      email: session?.user?.email,
+    });
 
     if (!foundAccount) throw new Error("Error finding account");
 

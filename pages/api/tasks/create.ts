@@ -14,7 +14,8 @@ export default async function handler(
     await dbConnect();
     await authCheck(req, res, authOptions);
 
-    const { task, urgency, order, resourceRef, groupRef } = req.body;
+    const { task, urgency, order, resourceRef, groupRef, description } =
+      req.body;
 
     const newtask = {
       task,
@@ -22,6 +23,7 @@ export default async function handler(
       order,
       resourceRef,
       groupRef,
+      description,
     };
 
     console.log("new task", newtask);

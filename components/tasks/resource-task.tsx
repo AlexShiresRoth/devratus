@@ -10,6 +10,7 @@ import {
 } from "react-icons/ai";
 import { BsArchive } from "react-icons/bs";
 import { TaskType } from "../../types/task.types";
+import LoadingSpinner from "../loading/loading-spinner";
 import UrgencySelector from "./urgency-selector";
 
 type Props = {
@@ -169,14 +170,14 @@ const ResourceTask = ({
         }
       )}
     >
-      <div className='flex items-center gap-2 w-full'>
+      <div className="flex items-center gap-2 w-full">
         {showActions && !editMode && (
-          <div className='flex items-center gap-2'>
+          <div className="flex items-center gap-2">
             {/* Allow for user to complete task */}
             {task?.status === "incomplete" && (
               <button
                 onClick={() => handleTaskAction("completed")}
-                className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-green-400 hover:text-slate-50 font-bold transition-all'
+                className="text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-green-400 hover:text-slate-50 font-bold transition-all"
               >
                 <AiOutlineCheck />
               </button>
@@ -185,7 +186,7 @@ const ResourceTask = ({
               // Allow for user to set a task back to incomplete
               <button
                 onClick={() => handleTaskAction("incomplete")}
-                className='text-slate-500 rounded-full p-1 bg-green-400 text-xs hover:bg-slate-800/50 hover:text-slate-50 font-bold transition-all'
+                className="text-slate-500 rounded-full p-1 bg-green-400 text-xs hover:bg-slate-800/50 hover:text-slate-50 font-bold transition-all"
               >
                 <AiOutlineCheck />
               </button>
@@ -194,7 +195,7 @@ const ResourceTask = ({
             {task?.status !== "archived" && (
               <button
                 onClick={() => handleTaskAction("archived")}
-                className='text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-red-400 hover:text-slate-50 font-bold transition-all'
+                className="text-slate-400/80 rounded-full p-1 bg-slate-600/80 text-xs hover:bg-red-400 hover:text-slate-50 font-bold transition-all"
               >
                 <BsArchive />
               </button>
@@ -204,13 +205,13 @@ const ResourceTask = ({
               <>
                 <button
                   onClick={() => handleTaskAction("incomplete")}
-                  className='text-slate-50  rounded-full p-1 bg-sky-500 text-sm hover:bg-sky-600 hover:text-slate-50 font-bold transition-all'
+                  className="text-slate-50  rounded-full p-1 bg-sky-500 text-sm hover:bg-sky-600 hover:text-slate-50 font-bold transition-all"
                 >
                   <AiOutlineUndo />
                 </button>
                 <button
                   onClick={() => handleDeleteTask()}
-                  className='text-slate-50    rounded-full p-1 bg-red-500 text-sm hover:bg-red-400 hover:text-slate-50 font-bold transition-all'
+                  className="text-slate-50    rounded-full p-1 bg-red-500 text-sm hover:bg-red-400 hover:text-slate-50 font-bold transition-all"
                 >
                   <AiOutlineDelete />
                 </button>
@@ -219,68 +220,63 @@ const ResourceTask = ({
           </div>
         )}
         {editMode ? (
-          <form className='flex flex-col gap-2 w-full p-2'>
+          <form className="flex flex-col gap-2 w-full p-2">
             <input
               value={taskEdited}
-              name='taskEdited'
-              className='bg-slate-600 rounded p-2'
+              name="taskEdited"
+              className="bg-slate-600 rounded p-2"
               onChange={onChange}
               autoFocus={true}
-              placeholder='Task'
+              placeholder="Task"
             />
             <UrgencySelector
               handleSelectUrgency={handleSelectUrgency}
               urgency={urgency}
             />
-            <p className='text-slate-100 font-bold text-xs'>Description</p>
+            <p className="text-slate-100 font-bold text-xs">Description</p>
             <textarea
-              className='min-h-[100px] rounded bg-slate-600 p-2'
-              placeholder='Task Description'
+              className="min-h-[100px] rounded bg-slate-600 p-2"
+              placeholder="Task Description"
               value={description}
               onChange={(e) => onDescChange(e)}
             />
             <button
               onClick={(e) => handleSubmit(e)}
-              className='flex items-center bg-green-400 rounded text-slate-50 font-bold p-2 self-end hover:bg-green-500 transition-all'
+              className="flex items-center bg-green-400 rounded text-slate-50 font-bold p-2 self-end hover:bg-green-500 transition-all"
             >
-              {submittingEdits && (
-                <svg
-                  className='animate-spin h-5 w-5 mr-3 rounded-full border-4 border-slate-500/50 border-t-slate-50'
-                  viewBox='0 0 24 24'
-                ></svg>
-              )}
+              {submittingEdits && <LoadingSpinner />}
               {submittingEdits ? "Saving..." : "Save"}
             </button>
           </form>
         ) : (
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <p
-              className='hover:cursor-pointer'
+              className="hover:cursor-pointer"
               onClick={() => setShowDescription(!showDescription)}
             >
               {taskEdited}
             </p>
             {showDescription && description && (
-              <div className='p-2 bg-slate-600 rounded'>
-                <p className='text-slate-100 font-bold text-xs'>Description</p>
-                <p className='text-slate-300'>{description}</p>
+              <div className="p-2 bg-slate-600 rounded">
+                <p className="text-slate-100 font-bold text-xs">Description</p>
+                <p className="text-slate-300">{description}</p>
               </div>
             )}
           </div>
         )}
       </div>
-      <div className='w-1/4 flex justify-end'>
+      <div className="w-1/4 flex justify-end">
         {editMode ? (
           <button
             onClick={() => handleReset()}
-            className='flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all'
+            className="flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all"
           >
             <AiOutlineClose />{" "}
           </button>
         ) : (
           <button
             onClick={() => setEditMode(true)}
-            className='flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all'
+            className="flex items-center rounded-full bg-slate-300 text-black p-1 text-sm hover:shadow-xl hover:bg-sky-400 transition-all"
           >
             <AiOutlineEdit />
           </button>
