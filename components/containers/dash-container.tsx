@@ -1,18 +1,15 @@
 import React from "react";
-import useFetchGroups from "../../custom-hooks/useFetchGroups";
-import { GrGroup } from "react-icons/gr";
+import { BsArrowRight } from "react-icons/bs";
+import Link from "next/link";
+import { AiOutlineCluster } from "react-icons/ai";
+import DashboardGroups from "../groups/dashboard-groups";
+import DashboardResources from "../resources/dashboard-resources";
 const DashContainer = () => {
-  const { groups } = useFetchGroups();
-
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-11/12 flex items center my-6">
-        <div className="rounded bg-slate-600 p-4 flex flex-col items-center">
-          <GrGroup className="font-2xl text-slate-50" />
-          <h4 className="text-slate-100 font-bold text-xl">
-            Groups: {groups?.length}
-          </h4>
-        </div>
+      <div className="w-11/12 flex items-center my-6 gap-4">
+        <DashboardGroups />
+        <DashboardResources />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/redux-hooks";
 import { fetchGroups, groupState } from "../redux/slices/groups.slice";
+import useSWR from "swr";
 
 //refetches or fetches all groups from db
 const useFetchGroups = () => {

@@ -15,8 +15,6 @@ export default async function handler(
 
     const session = await authCheck(req, res, authOptions);
 
-    console.log("Session", session);
-
     const foundAccount = await AccountModel.findOne({
       email: session?.user?.email,
     });
