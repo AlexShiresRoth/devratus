@@ -3,6 +3,7 @@
 import axios from "axios";
 import React from "react";
 import useSWR from "swr";
+import Heading2 from "../text/heading-2";
 
 const fetcher = (url: string) =>
   axios({ method: "POST", url }).then((res) => res.data);
@@ -14,7 +15,7 @@ const ResourcesLengthDisplay = () => {
   );
 
   console.log("resources?: ", resources);
-  return <div>ResourcesLengthDisplay</div>;
+  return <Heading2>{resources?.resources?.length}</Heading2>;
 };
 
 export default ResourcesLengthDisplay;
