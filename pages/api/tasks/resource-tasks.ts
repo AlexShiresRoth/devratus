@@ -10,8 +10,6 @@ export default async function handler(
   try {
     const { resourceId } = req.body;
 
-    console.log("resourceId", resourceId);
-
     if (!resourceId)
       return res
         .status(400)

@@ -21,6 +21,9 @@ const AccountSchema = new mongoose.Schema({
   resources: {
     type: Array<{ _id: String; ref: "Resource" }>,
   },
+  tasks: {
+    type: Array<{ _id: String; ref: "Task" }>,
+  },
   authProvider: {
     type: String,
   },
